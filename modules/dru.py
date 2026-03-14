@@ -2,6 +2,14 @@ import numpy as np
 import torch
 
 class DRU:
+	# sigma: độ lệch chuẩn của nhiễu Gaussian thêm vào messeage 
+	# comm_narrow : chế độ kênh hẹp. Nếu True thì message là bit nhị phân -> sigmoid, nếu False thì 
+	# message là vector đa lớp và dùng softmax.
+	# hard: có dùng chế độ cứng khi discretize hay không 
+	# Nếu True -> threshold , nếu False -> Sharpened Sigmoid 
+
+	# Tín hiệu liên tục (hard = False ) được sử dụng trong quá trình learning
+	# Đinh nghĩa các dữ liệu hơi cứng: tensor([1.9287e-09, 1.0000e+00, 1.0000e+00, 1.0000e+00])
 	def __init__(self, sigma, comm_narrow=True, hard=False):
 		self.sigma = sigma
 		self.comm_narrow = comm_narrow

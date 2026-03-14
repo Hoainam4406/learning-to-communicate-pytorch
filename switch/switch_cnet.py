@@ -4,6 +4,10 @@ DRQN-based agent that learns to communicate with other agents to play
 the Switch game.
 
 """
+
+# Sử dụng các lớp nn.Embedding và nn.Linear để biến các thông tin rời rạc 
+# thành các vector dày đặc mà mạng neural có thể xử lý 
+# 
 import torch
 from torch import nn
 from torch.nn import functional as F
@@ -11,7 +15,14 @@ from torch.autograd import Variable
 
 
 class SwitchCNet(nn.Module):
-
+# opt: Đối tượng chứa tất cả các tùy chọn và siêu tham số của mô hình 
+# và game.
+# commn_size: kích thước của vector thông điệp mà các agent trao đổi với nhau 
+# agent_lookup: một bảng để chuyển đổi ID của agent thành một vector biểu diễn
+# state_lookup: chuyển đổi trạng thái của công tắc
+# prev_action_lookup: chuyển đổi hành động ở bước trước thành một vector 
+# messages_mlp: Một mạng neural nhỏ dùng để xử lý và mã hóa các thông điệp nhận được 
+# rnn: nơ ron hồi quy cho phép có trí nhớ về các sự kiện đã xảy ra trong quá khứ 
 	def __init__(self, opt):
 		super(SwitchCNet, self).__init__()
 
@@ -78,7 +89,7 @@ class SwitchCNet(nn.Module):
 
 	def forward(self, s_t, messages, hidden, prev_action, agent_index):
 		opt = self.opt
-
+# s_t : trạng thái tại thời điểm t, 
 		s_t = Variable(s_t)
 		hidden = Variable(hidden)
 		prev_message = None

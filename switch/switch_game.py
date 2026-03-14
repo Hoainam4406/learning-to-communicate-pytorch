@@ -10,6 +10,7 @@ RIAL Actions:
 3 = On
 4 = Off
 """
+# Quản lý trạng thái game, hành động của agent, cơ chế tính thưởng 
 
 import numpy as np
 import torch

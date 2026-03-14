@@ -11,7 +11,8 @@ from switch.switch_cnet import SwitchCNet
 """
 Play communication games
 """
-
+# Việc dùng logic gì để giải quyết vấn đề được lưu trữ vào trong bộ tham số của mạng nơ ron
+# Các agent có thể phân vai - sau nhiều lần học thì Agents biết rằng à nếu mình đóng vai trò này thì có thể đạt được phần thưởng tốt hơn
 # configure opts for Switch game with 3 DIAL agents
 def init_action_and_comm_bits(opt):
 	opt.comm_enabled = opt.game_comm_bits > 0 and opt.game_nagents > 1
