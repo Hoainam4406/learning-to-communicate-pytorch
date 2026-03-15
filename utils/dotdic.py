@@ -1,6 +1,6 @@
 import numpy as np
 import copy
-
+# Object hóa dictionary 
 class DotDic(dict):
 	__getattr__ = dict.get
 	__setattr__ = dict.__setitem__

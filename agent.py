@@ -13,14 +13,16 @@ from modules.dru import DRU
 
 class CNetAgent:
 	def __init__(self, opt, game, model, target, index):
-		self.opt = opt
-		self.game = game
-		self.model = model
-		self.model_target = target
+		self.opt = opt # Cấu hình huấn luyện
+		self.game = game # môi trường/ logic game
+		self.model = model # Mạng dự đoán Q, câp nhật Gradients
+		self.model_target = target # Mạng mục tiêu, bản sao ổn định hơn để tính giá trị đích 
 
 		for p in self.model_target.parameters():
 			p.requires_grad = False
-
+		# Duyệt qua từng tham số p của mạng target 
+		# Không tính gradient cho p
+		# Mạng target chỉ dùng để tính giá trị đích ổn định ,ko cập nhật 
 		self.episodes_seen = 0
 		self.dru = DRU(opt.game_comm_sigma, opt.model_comm_narrow, opt.game_comm_hard)
 		self.id = index
@@ -33,12 +35,16 @@ class CNetAgent:
 		self.episodes_seen = 0
 
 	def _eps_flip(self, eps):
+		# Chọn giữa Exploration và Exploitation
 		# Sample Bernoulli with P(True) = eps
+		# Explore: Chọn hành động ngẫu nhiên
+		# Exploit: Chọn hành động của Q cao nhất 
 		return np.random.rand(self.opt.bs) < eps
 
 	def _random_choice(self, items):
 		return torch.from_numpy(np.random.choice(items, 1)).item()
 
+# Chiến thuật epsilon- greedy(vừa khám phá vừa khai thác)
 	def select_action_and_comm(self, step, q, eps=0, target=False, train_mode=False):
 		# eps-Greedy action selector
 		if not train_mode:
@@ -88,6 +94,7 @@ class CNetAgent:
 
 		return (action, action_value), (comm_vector, comm_action, comm_value)
 
+# Tính toán loss từ việc Bình phương sai số của hành độn vật lý và hành động gửi tin 
 	def episode_loss(self, episode):
 		opt = self.opt
 		total_loss = torch.zeros(opt.bs)
@@ -144,3 +151,4 @@ class CNetAgent:
 			self.model_target.load_state_dict(self.model.state_dict())
 
 
+# Sau 1 khoảng thời gian copy bộ não giỏi nhất cho mạng atrrget
